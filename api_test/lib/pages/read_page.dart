@@ -13,16 +13,23 @@ class _ReadAlbumPageState extends State<ReadAlbumPage> {
   String _extractedInfo = "";
 
   Future<void> _fetchAlbum() async {
-    final id = "";
+    final id = _controller.text.trim();
     if (id.isEmpty) return;
 
-    final url = Uri.parse("");
+    final url = Uri.parse("https://jsonplaceholder.typicode.com/albums/$id");
 
     try {
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
-        
+        final decoded = json.decode(response.body);
+        setState(() {
+          _rawJson = response.body;
+          var id = decoded['id'];
+          var name = decoded['id'];
+          var title = decoded['title'];
+          _extractedInfo = "ID: $id \n UserID: $name \n Title: $title \n";
+        });
       } else {
         setState(() {
           _rawJson = "Error: ${response.statusCode}";
@@ -54,10 +61,7 @@ class _ReadAlbumPageState extends State<ReadAlbumPage> {
               keyboardType: TextInputType.number,
             ),
             SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: _fetchAlbum,
-              child: Text("Fetch Album"),
-            ),
+            ElevatedButton(onPressed: _fetchAlbum, child: Text("Fetch Album")),
             SizedBox(height: 20),
             Text("🔹 Raw JSON:", style: TextStyle(fontWeight: FontWeight.bold)),
             Container(
@@ -67,7 +71,10 @@ class _ReadAlbumPageState extends State<ReadAlbumPage> {
               child: SelectableText(_rawJson),
             ),
             SizedBox(height: 12),
-            Text("🔹 Extracted Info:", style: TextStyle(fontWeight: FontWeight.bold)),
+            Text(
+              "🔹 Extracted Info:",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             Container(
               width: double.infinity,
               padding: EdgeInsets.all(8),

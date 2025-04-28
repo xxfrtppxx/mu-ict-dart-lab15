@@ -15,9 +15,9 @@ class _CreateAlbumPageState extends State<CreateAlbumPage> {
   String _responseText = "";
 
   Future<void> _createAlbum() async {
-    final id = "";
-    final userId = "";
-    final title = "";
+    final id = _idController.text.trim();
+    final userId = _userIdController.text.trim();
+    final title = _titleController.text.trim();
 
     if (id.isEmpty || userId.isEmpty || title.isEmpty) {
       setState(() {
@@ -26,12 +26,22 @@ class _CreateAlbumPageState extends State<CreateAlbumPage> {
       return;
     }
 
-    final url = Uri.parse("");
+    final url = Uri.parse("https://jsonplaceholder.typicode.com/albums");
 
-    Map<String, dynamic> album = {};
+    Map<String, dynamic> album = {
+      "id": int.parse(id),
+      "userId": int.parse(userId),
+      "title": title,
+    };
+
+    String album_json_string = json.encode(album);
 
     try {
-      final response = null; // http post
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: album_json_string,
+      );
 
       if (response.statusCode == 201) {
         setState(() {
@@ -79,16 +89,13 @@ class _CreateAlbumPageState extends State<CreateAlbumPage> {
               child: Text("Create Album"),
             ),
             SizedBox(height: 20),
-            Text(
-              "Response:",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+            Text("Response:", style: TextStyle(fontWeight: FontWeight.bold)),
             Container(
               width: double.infinity,
               padding: EdgeInsets.all(10),
               color: Colors.grey.shade100,
               child: SelectableText(_responseText),
-            )
+            ),
           ],
         ),
       ),

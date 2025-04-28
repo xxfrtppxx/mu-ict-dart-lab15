@@ -15,10 +15,9 @@ class _UpdateAlbumPageState extends State<UpdateAlbumPage> {
   String _responseText = "";
 
   Future<void> _updateAlbum() async {
-
-    final id = "";
-    final userId = "=";
-    final title = "";
+    final id = _idController.text.trim();
+    final userId = _userIdController.text.trim();
+    final title = _titleController.text.trim();
 
     if (id.isEmpty || userId.isEmpty || title.isEmpty) {
       setState(() {
@@ -27,13 +26,22 @@ class _UpdateAlbumPageState extends State<UpdateAlbumPage> {
       return;
     }
 
-       Map<String,dynamic> album = {};
+    Map<String, dynamic> album = {
+      "id": int.parse(id),
+      "userId": int.parse(userId),
+      "title": title,
+    };
 
-    
-    final url = Uri.parse("");
-    
+    final url = Uri.parse("https://jsonplaceholder.typicode.com/albums/$id");
+
+    String album_json_string = json.encode(album);
+
     try {
-      final response = null;
+      final response = await http.put(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: album_json_string,
+      );
 
       if (response.statusCode == 200) {
         setState(() {
@@ -81,16 +89,13 @@ class _UpdateAlbumPageState extends State<UpdateAlbumPage> {
               child: Text("Update Album"),
             ),
             SizedBox(height: 20),
-            Text(
-              "Response:",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+            Text("Response:", style: TextStyle(fontWeight: FontWeight.bold)),
             Container(
               width: double.infinity,
               padding: EdgeInsets.all(10),
               color: Colors.grey.shade100,
               child: SelectableText(_responseText),
-            )
+            ),
           ],
         ),
       ),

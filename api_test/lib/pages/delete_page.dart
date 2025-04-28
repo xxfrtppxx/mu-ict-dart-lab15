@@ -12,7 +12,7 @@ class _DeleteAlbumPageState extends State<DeleteAlbumPage> {
 
   Future<void> _deleteAlbum() async {
     //Task07
-    final id = "";
+    final id = _idController.text.trim();
 
     if (id.isEmpty) {
       setState(() {
@@ -21,10 +21,14 @@ class _DeleteAlbumPageState extends State<DeleteAlbumPage> {
       return;
     }
 
-    final url = Uri.parse("");
+    final url = Uri.parse("https://jsonplaceholder.typicode.com/albums/$id");
 
     try {
-      final response = null; //Task08
+      final response = await http.delete(
+        //Task08
+        url,
+        headers: {"Content-Type": "application/json"},
+      );
 
       if (response.statusCode == 200) {
         setState(() {
@@ -64,16 +68,13 @@ class _DeleteAlbumPageState extends State<DeleteAlbumPage> {
               child: Text("Delete Album"),
             ),
             SizedBox(height: 20),
-            Text(
-              "ผลลัพธ์:",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+            Text("ผลลัพธ์:", style: TextStyle(fontWeight: FontWeight.bold)),
             Container(
               width: double.infinity,
               padding: EdgeInsets.all(10),
               color: Colors.grey.shade100,
               child: SelectableText(_responseText),
-            )
+            ),
           ],
         ),
       ),
